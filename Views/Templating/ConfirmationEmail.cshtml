@@ -1,0 +1,29 @@
+﻿@model string
+
+@{
+    Layout = null;
+    var container = @"
+    background-color: #1a1e21;
+    margin: 0;
+    padding: 20px";
+    var cardStyle = @"
+    height: fit-content;
+    color: white;
+    background-color: #2c3034;
+    border-radius: 10px;
+    padding: 20px;
+    font-family: Helvetica, serif;";
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<body>
+<div style="@container">
+    <div style="@cardStyle">
+        <h1>Thank you for registering a RockFS account.</h1>
+        <p>To confirm your email, click <a href="@Html.Raw(Model)" style="color: #86b7fe">here</a>.</p>
+    </div>
+</div>
+</body>
+</html>

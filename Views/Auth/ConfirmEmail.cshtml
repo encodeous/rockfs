@@ -1,0 +1,18 @@
+﻿@{
+    ViewBag.Title = "RockFS | Email Confirmation";
+    ViewData["R-Title"] = "RockFS | Account Activation";
+    Layout = "_Layout";
+}
+
+@if (ViewBag.Error)
+{
+    <h1 class="text-danger">
+        @ViewData["message"]
+    </h1>
+}
+else
+{
+    <h1 class="text-info">
+        @ViewData["message"]
+    </h1>
+}

@@ -1,0 +1,40 @@
+﻿@using RockFS.Services.RockFS
+@using RockFS.Models.Auth
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> Users
+@inject StateService StateService
+@inject RoleService RoleService
+@{
+    ViewData["Title"] = "Welcome to RockFS";
+    ViewData["R-Title"] = "RockFS | Home";
+    var identityUser = await Users.GetUserAsync(User);
+}
+
+@if (await StateService.RequiresSetup())
+{
+    <h1>RockFS Setup</h1>
+    <p>Please register & confirm an account to be the system administrator account.</p>
+}
+else
+{
+    <h1>Welcome to RockFS</h1>
+
+    @if (User.IsInRole(UserRole.Guest.ToString()))
+    {
+        <p>Welcome to a hosted instance of Rock File Server.</p>
+        <p>Your Role is @(await RoleService.GetHighestRoleAsync(identityUser))</p>
+    }
+    else
+    {
+        <p>
+            Hello unregistered user, this is a self-hosted instance of Rock File Server.
+        </p>
+        <h3>
+            Getting Started
+        </h3>
+        <p>
+            To get started, register a new account and then contact an administrator to assign you the <code>Member</code> role.
+        </p>
+    }
+
+}

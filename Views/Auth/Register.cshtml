@@ -1,0 +1,48 @@
+﻿@using RockFS.Services.RockFS
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model RockFS.Models.Auth.RegisterModel
+
+@inject StateService StateService
+@{
+    ViewBag.Title = "RockFS | Register a new Account";
+    ViewData["R-Title"] = "RockFS | Account Registration";
+    Layout = "_Layout";
+}
+<div class="d-flex justify-content-center w-100">
+    <div class="d-flex flex-row">
+        <form style="max-width: 450px" id="registerForm" asp-action="RegisterAccount" method="post">
+            <h2>Create a new account.</h2>
+            <hr/>
+            @if (await StateService.RequiresSetup())
+            {
+                <p class="text-danger">RockFS is in Setup mode. The first fully-registered user will become a system administrator account that cannot be changed in the future.</p>
+            }
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-floating">
+                <input asp-for="Email" class="form-control form-dark" autocomplete="username" aria-required="true"/>
+                <label asp-for="Email"></label>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <input asp-for="Password" class="form-control form-dark" autocomplete="new-password" aria-required="true"/>
+                <label asp-for="Password"></label>
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <input asp-for="ConfirmPassword" class="form-control form-dark" autocomplete="new-password" aria-required="true"/>
+                <label asp-for="ConfirmPassword"></label>
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+            <button id="registerSubmit" type="submit" class="w-100 btn btn-outline-dark btn-light">Register</button>
+        </form>
+        <div class="px-5">
+            <h2>Other Actions</h2>
+            <hr/>
+            <p>
+                <a href="@Urls.LoginUrl">Already have an account?</a>
+                <br/>
+                <a href="@Urls.ResendEmailUrl">Resend email confirmation</a>
+            </p>
+        </div>
+    </div>
+</div>
