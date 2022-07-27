@@ -23,4 +23,5 @@ public class StateService
         await _context.SetConfigAsync(ConfigManager.ConfigKeys.IsSetupFinished, true);
         await _context.SaveChangesAsync();
     }
+    
 }

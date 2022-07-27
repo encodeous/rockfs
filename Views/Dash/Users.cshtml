@@ -1,0 +1,66 @@
+﻿@using RockFS.Data
+@using RockFS.Services.RockFS
+@inject ApplicationDbContext ApplicationDbContext
+@inject RoleService RoleService
+@{
+    ViewBag.Title = "RockFS - Admin | Users";
+    Layout = "_Layout";
+    ViewData["R-Title"] = "RockFS - Admin | User Management";
+}
+
+<table class="table table-dark table-hover">
+  <thead class="table-light">
+  <tr>
+    <th scope="col">Email</th>
+    <th scope="col">Is Confirmed</th>
+    <th scope="col">Role</th>
+    <th scope="col"></th>
+  </tr>
+  </thead>
+  <tbody>
+  @foreach (var user in ApplicationDbContext.Users)
+  {
+    <tr class="rfs-row" data-row-id="@user.Id">
+      <th scope="row">
+        <a href="@Urls.EditUserUrl/@user.Id">@user.Email</a>
+      </th>
+      <td>@user.EmailConfirmed</td>
+      <td>@await RoleService.GetHighestRoleAsync(user)</td>
+      <td class="d-flex flex-row justify-content-end">
+        <a class="rfs-button" title="Edit User Information" href="@Urls.EditUserUrl/@user.Id">
+          <i class="fa-solid fa-pen-to-square"></i>
+        </a>
+        <a class="rfs-button" title="Edit User Mounts" href="@Urls.EditMountsUrl/@user.Id">
+          <i class="fa-solid fa-network-wired"></i>
+        </a>
+      </td>
+    </tr>
+  }
+  </tbody>
+</table>
+
+@section Scripts{
+  <script>
+    let menu = new BootstrapMenu('.rfs-row', {
+      fetchElementData: function($rowElem) {
+          return $rowElem.data('rowId');
+        },
+          actions: {
+            editUser: {
+              name: 'Edit user',
+              iconClass: 'fa-pencil',
+              onClick: function(row) {
+                window.location.href = "edituser/" + row;
+              }
+            },
+            editMounts: {
+              name: 'Edit mounts',
+              iconClass: 'fa-network-wired',
+              onClick: function(row) {
+                window.location.href = "editmounts/" + row;
+              }
+            }
+          }
+    });
+  </script>
+}

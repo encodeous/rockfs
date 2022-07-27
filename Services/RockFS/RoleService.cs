@@ -1,14 +1,15 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
+using RockFS.Data.Models;
 using RockFS.Models.Auth;
 
 namespace RockFS.Services.RockFS;
 
 public class RoleService
 {
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly UserManager<RockFsUser> _userManager;
 
-    public RoleService(UserManager<IdentityUser> userManager)
+    public RoleService(UserManager<RockFsUser> userManager)
     {
         _userManager = userManager;
     }
@@ -21,8 +22,10 @@ public class RoleService
         }
     }
     
-    public async Task AddUserToRoleAsync(IdentityUser user, UserRole role)
+    public async Task AddUserToRoleAsync(RockFsUser user, UserRole role)
     {
+        await _userManager.RemoveFromRolesAsync(user,
+            new[] { nameof(UserRole.Guest), nameof(UserRole.Member), nameof(UserRole.Administrator), nameof(UserRole.SystemAdministrator)});
         await _userManager.AddToRoleAsync(user, nameof(UserRole.Guest));
         if (role == UserRole.Guest) return;
         await _userManager.AddToRoleAsync(user, nameof(UserRole.Member));
@@ -33,7 +36,7 @@ public class RoleService
         if (role == UserRole.SystemAdministrator) return;
     }
 
-    public async Task<UserRole> GetHighestRoleAsync(IdentityUser user)
+    public async Task<UserRole> GetHighestRoleAsync(RockFsUser user)
     {
         if (await _userManager.IsInRoleAsync(user, nameof(UserRole.SystemAdministrator)))
         {

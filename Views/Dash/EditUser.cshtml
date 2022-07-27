@@ -1,0 +1,34 @@
+﻿@using RockFS.Models.Auth
+@model RockFS.Models.Dashboard.EditUserModel
+
+@{
+    ViewBag.Title = "RockFS - Admin | Editing User";
+    Layout = "_Layout";
+    ViewData["R-Title"] = "RockFS - Admin | Editing User Information";
+}
+
+<a href="@Url.Action("Users")">Return to Users List</a>
+
+<form asp-action="EditUser" style="max-width: 750px" id="userInfoForm" method="post">
+    <h2>Editing <code>@Model.UserEmail</code>'s information</h2>
+    <hr/>
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input asp-for="UserId" type="hidden" />
+    <div class="form-floating">
+        <input asp-for="UserEmail" class="form-control form-dark" autocomplete="username" aria-required="true"/>
+        <label asp-for="UserEmail"></label>
+        <span asp-validation-for="UserEmail" class="text-danger"></span>
+    </div>
+    <div class="checkbox pt-2">
+        <label asp-for="IsConfirmed" class="form-label">
+            <input class="form-check-input" asp-for="IsConfirmed"/>
+            @Html.DisplayNameFor(m => m.IsConfirmed)
+        </label>
+    </div>
+    <div class="form-group pb-2">
+        <label asp-for="Role" class="control-label"></label>
+        <select asp-for="Role" class="form-control form-dark" asp-items="Html.GetEnumSelectList<UserRole>()"></select>
+    </div>
+    <button style="max-width: 200px" id="userInfoFormSubmit" type="submit" class="w-100 btn btn-outline-dark btn-light">Change Information</button>
+    <a style="max-width: 150px" href="@Urls.EditMountsUrl/@Model.UserId" class="w-100 btn btn-outline-dark btn-primary text-light">Edit Mounts</a>
+</form>

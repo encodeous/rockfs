@@ -5,6 +5,7 @@ using FluentUri;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using RockFS.Data.Models;
 using RockFS.Models.Auth;
 
 namespace RockFS.Controllers;
@@ -80,7 +81,7 @@ public partial class AuthController
         });
     }
     
-    public async Task SendPasswordResetEmailAsync(IdentityUser user, string email)
+    public async Task SendPasswordResetEmailAsync(RockFsUser user, string email)
     {
         var code = await _userManager.GeneratePasswordResetTokenAsync(user);
         code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
@@ -93,6 +94,6 @@ public partial class AuthController
         var body = await _renderer.RenderViewAsync("~/Views/Templating/PasswordResetEmail.cshtml",
             HtmlEncoder.Default.Encode(uri));
         
-        await _emailSender.SendEmailAsync(email, "Confirm your email", body);
+        await _emailSender.SendEmailAsync(email, "Password Reset", body);
     }
 }

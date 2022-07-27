@@ -68,9 +68,77 @@ select:-webkit-autofill:focus {
   display: inline-block;
 }
 .rfs-title{
-  font-size: 3vmin;
+  font-size: 1rem;
   color: white;
-  letter-spacing: 3px;
+  letter-spacing: 2px;
   white-space: nowrap;
   writing-mode: vertical-rl;
+  padding: 5px;
+  background-color: #2b72ab;
+}
+
+/*Context Menu*/
+
+.dropdown-menu{
+  background-color: #4a4a4a !important;
+  box-shadow: 0 0 10px #202323;
+  padding: 0;
+  border-radius: 5px;
+}
+
+.dropdown-menu > li[role=presentation]{
+  padding-left: 6px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  margin: 2px;
+}
+.dropdown-menu > li[role=presentation]:hover{
+  background-color: #616161 !important;
+  cursor: default;
+  transition: 0.2s;
+  border-radius: 5px;
+}
+
+.dropdown-menu > li > a{
+  text-decoration: none;
+  color: white;
+  cursor: default;
+}
+
+.dropdown-menu > li > a > i{
+  margin-left: 5px;
+  margin-right: 2px;
+  font-size: 10pt;
+}
+
+.dropdown-menu > li > a > span{
+  margin-left: 4px;
+  font-size: 9pt;
+}
+
+.dropdown-menu > li[class=divider]{
+  background-color: #636363;
+  height: 1px;
+}
+
+.rfs-button{
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+  color: white;
+  text-decoration: none;
+}
+.rfs-button:hover{
+  background-color: #222526;
+}
+.rfs-button:active{
+  background-color: #181a1a;
+}
+:root {
+  color-scheme: dark;
 }

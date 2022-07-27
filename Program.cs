@@ -4,6 +4,7 @@ using RockFS.Builders;
 using RockFS.Data;
 using RockFS.Services.Email;
 using RockFS.Services.RockFS;
+using Microsoft.AspNetCore.DataProtection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,9 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+builder.Services.AddDataProtection()
+    .PersistKeysToDbContext<ApplicationDbContext>();
 
 builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 
@@ -28,6 +32,7 @@ builder.Services.AddTransient<RazorRenderer>();
 builder.Services.AddTransient<EmailSender>();
 builder.Services.AddTransient<StateService>();
 builder.Services.AddTransient<RoleService>();
+builder.Services.AddTransient<RfsService>();
 builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration);
 
 var app = builder.Build();

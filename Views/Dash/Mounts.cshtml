@@ -1,7 +1,62 @@
-﻿@{
-    ViewBag.Title = "title";
+﻿@using RockFS.Services.RockFS
+@using RockFS.Data.Models
+@using Microsoft.AspNetCore.Identity
+@using Humanizer.Bytes
+@using Humanizer
+@inject RfsService RfsService
+@inject RoleService RoleService
+@inject UserManager<RockFsUser> Users
+@{
+    ViewBag.Title = "RockFS | Virtual File System Mounts";
     Layout = "_Layout";
-    ViewData["R-Title"] = "RockFS | File System Mounts";
+    ViewData["R-Title"] = "RockFS | Virtual File System Mounts";
+    var rUser = await Users.GetUserAsync(User);
+    var mounts = await RfsService.GetUserMountsAsync(new Guid(rUser.Id));
 }
 
-<h2>title</h2>
+<table class="table table-dark table-hover">
+    <thead class="table-light">
+    <tr>
+        <th scope="col">Mount Name</th>
+        <th scope="col">Mount Path</th>
+        <th scope="col">Space Utilized</th>
+        <th scope="col"></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var mount in mounts)
+    {
+        <tr class="rfs-row">
+            <th scope="row">
+                <a href="@Urls.ExplorerUrl/@mount.MountId">@mount.MountFriendlyName</a>
+            </th>
+            <td>@mount.MountPath</td>
+            @if (mount.SizeLimit >= 0)
+            {
+                var size = await RfsService.GetMountUsedSize(mount.MountId);
+                var limit = (double)mount.SizeLimit;
+                @if (size == long.MaxValue)
+                {
+                    <td>Exceeded computation time limit.</td>
+                }
+                else
+                {
+                    <td>@(ByteSize.FromBytes(size).Humanize()) out of @(ByteSize.FromBytes(limit).Humanize())</td> 
+                }
+            }
+            else
+            {
+                <td>N/A</td>
+            }
+            <td class="d-flex flex-row justify-content-end">
+                <a class="rfs-button" title="Open Mount in Explorer" href="@Urls.ExplorerUrl/@mount.MountId">
+                    <i class="fa-solid fa-up-right-from-square"></i>
+                </a>
+                <a class="rfs-button" title="Mount Settings" href="@Urls.MountSettingsUrl/@mount.MountId">
+                    <i class="fa-solid fa-gear"></i>
+                </a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

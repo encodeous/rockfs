@@ -1,0 +1,91 @@
+﻿@model RockFS.Models.Dashboard.EditMountModel
+@{
+    ViewBag.Title = "RockFS - Admin | Editing Mounts";
+    Layout = "_Layout";
+    ViewData["R-Title"] = "RockFS - Admin | Editing Mounts";
+}
+
+<a href="@Url.Action("Users")">Return to Users List</a>
+
+<form asp-action="AddBlankMount" method="post">
+    <h2>Editing <code>@Model.UserEmail</code>'s file system mounts</h2>
+    <hr/>
+    <input asp-for="UserId" type="hidden" />
+    <button style="max-width: 150px" type="submit" class="w-100 btn btn-outline-dark btn-light">Add New Mount</button>
+</form>
+
+<form id="delete" method="post">
+    
+</form>
+
+<form asp-action="EditMounts" class="pt-2" id="userInfoForm" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input asp-for="UserId" type="hidden" />
+    @if (!Model.Mounts.Any())
+    {
+        <p>
+            This user has no mounts. Add a new mount with the button above.
+        </p>
+    }
+    <table class="table table-dark table-hover">
+        <thead class="table-light">
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Physical File Path</th>
+            <th scope="col">Size limit (bytes, -1 for unlimited)</th>
+            <th scope="col">Is Public</th>
+            <th scope="col">Public Read/Write</th>
+            <th scope="col">Delete</th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var mount in Model.Mounts)
+        {
+            <tr class="rfs-row">
+                <td>
+                    <input asp-for="Mounts[mount.Key].MountFriendlyName" class="form-control form-dark"aria-required="true"/>
+                </td>
+                <td>
+                    <input asp-for="Mounts[mount.Key].MountPath" class="form-control form-dark"aria-required="true"/>
+                </td>
+                <td>
+                    <input asp-for="Mounts[mount.Key].FormattedSizeLimit" class="form-control form-dark"aria-required="true"/>
+                </td>
+                <td>
+                    <div class="rfst-row">
+                        <input class="form-check-input" asp-for="Mounts[mount.Key].IsPublic"/>
+                    </div>
+                </td>
+                <td>
+                    <div class="rfst-row">
+                        <input class="form-check-input" asp-for="Mounts[mount.Key].IsPublicWritable"/>
+                    </div>
+                  
+                </td>
+                <td>
+                    <div class="rfst-row">
+                        <input class="form-check-input" asp-for="Mounts[mount.Key].MarkForDeletion"/>   
+                    </div>
+                </td>
+                <td>
+                    <a class="rfs-button" title="Edit Mount Settings" href="@Urls.MountSettingsUrl/@mount.Key">
+                        <i class="fa-solid fa-gear"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    <button style="max-width: 200px" id="userInfoFormSubmit" type="submit" class="w-100 btn btn-outline-dark btn-light">Save Mounts</button>
+    <a style="max-width: 150px" href="@Urls.EditUserUrl/@Model.UserId" class="w-100 btn btn-outline-dark btn-primary text-light">Edit User</a>
+</form>
+
+<style>
+    .rfst-row{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 25px;
+    }
+</style>

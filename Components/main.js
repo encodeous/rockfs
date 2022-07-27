@@ -1,2 +1,2 @@
-import App from './App.svelte'
+import inspector from './inspector.svelte'
 import MediaQuery from './MediaQuery.svelte'

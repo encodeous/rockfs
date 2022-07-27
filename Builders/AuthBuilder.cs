@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using RockFS.Data;
+using RockFS.Data.Models;
 
 namespace RockFS.Builders;
 
@@ -16,7 +17,7 @@ public static class AuthBuilder
             })
             .AddIdentityCookies(o => { });
 
-        builder.Services.AddIdentityCore<IdentityUser>(o =>
+        builder.Services.AddIdentityCore<RockFsUser>(o =>
         {
             o.Stores.MaxLengthForKeys = 128;
             o.SignIn.RequireConfirmedAccount = true;

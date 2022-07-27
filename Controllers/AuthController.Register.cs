@@ -5,6 +5,7 @@ using FluentUri;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using RockFS.Data.Models;
 using RockFS.Models.Auth;
 
 namespace RockFS.Controllers;
@@ -33,7 +34,7 @@ public partial class AuthController
                 _logger.LogInformation("User created a new account with password.");
 
                 await SendConfirmationEmailAsync(user, input.Email);
-                ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
+                ModelState.AddModelError(string.Empty, "Confirmation email sent. Please check your email.");
             }
             else
             {
@@ -75,12 +76,12 @@ public partial class AuthController
 
         await SendConfirmationEmailAsync(user, input.Email);
         
-        ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
+        ModelState.AddModelError(string.Empty, "Confirmation email sent. Please check your email.");
         return View("ResendConfirmEmail");
     }
     
         
-    public async Task SendConfirmationEmailAsync(IdentityUser user, string email)
+    public async Task SendConfirmationEmailAsync(RockFsUser user, string email)
     {
         var userId = await _userManager.GetUserIdAsync(user);
         var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -98,16 +99,16 @@ public partial class AuthController
         await _emailSender.SendEmailAsync(email, "Confirm your email", body);
     }
     
-    private IdentityUser CreateUser()
+    private RockFsUser CreateUser()
     {
         try
         {
-            return Activator.CreateInstance<IdentityUser>();
+            return new RockFsUser();
         }
         catch
         {
-            throw new InvalidOperationException($"Can't create an instance of '{nameof(IdentityUser)}'. " +
-                                                $"Ensure that '{nameof(IdentityUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
+            throw new InvalidOperationException($"Can't create an instance of '{nameof(RockFsUser)}'. " +
+                                                $"Ensure that '{nameof(RockFsUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
                                                 $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
         }
     }

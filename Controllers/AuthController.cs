@@ -4,6 +4,7 @@ using FluentUri;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using RockFS.Data.Models;
 using RockFS.Models.Auth;
 using RockFS.Services.Email;
 using RockFS.Services.RockFS;
@@ -13,17 +14,17 @@ namespace RockFS.Controllers;
 public partial class AuthController : Controller
 {
     private readonly ILogger<AuthController> _logger;
-    private readonly SignInManager<IdentityUser> _signInManager;
-    private readonly UserManager<IdentityUser> _userManager;
-    private readonly IUserStore<IdentityUser> _userStore;
-    private readonly IUserEmailStore<IdentityUser> _emailStore;
+    private readonly SignInManager<RockFsUser> _signInManager;
+    private readonly UserManager<RockFsUser> _userManager;
+    private readonly IUserStore<RockFsUser> _userStore;
+    private readonly IUserEmailStore<RockFsUser> _emailStore;
     private readonly EmailSender _emailSender;
     private readonly IConfiguration _config;
     private readonly RazorRenderer _renderer;
     private readonly StateService _state;
     private readonly RoleService _roles;
 
-    public AuthController(ILogger<AuthController> logger, SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, IUserStore<IdentityUser> userStore, EmailSender emailSender, IConfiguration config, RazorRenderer renderer, StateService state, RoleService roles)
+    public AuthController(ILogger<AuthController> logger, SignInManager<RockFsUser> signInManager, UserManager<RockFsUser> userManager, IUserStore<RockFsUser> userStore, EmailSender emailSender, IConfiguration config, RazorRenderer renderer, StateService state, RoleService roles)
     {
         _logger = logger;
         _signInManager = signInManager;
@@ -37,6 +38,10 @@ public partial class AuthController : Controller
         _roles = roles;
     }
     public IActionResult Login()
+    {
+        return View();
+    }
+    public IActionResult AccessDenied()
     {
         return View();
     }
@@ -85,7 +90,10 @@ public partial class AuthController : Controller
                 }
                 else
                 {
-                    await _roles.AddUserToRoleAsync(user, UserRole.Guest);
+                    if (await _roles.GetHighestRoleAsync(user) == UserRole.Guest)
+                    {
+                        await _roles.AddUserToRoleAsync(user, UserRole.Guest);
+                    }
                 }
                 ViewBag.Error = !result.Succeeded;
                 ViewData["message"] = result.Succeeded ? "Thank you for confirming your email. You may now login." : "Error confirming your email. Try re-sending an email confirmation.";
@@ -115,12 +123,12 @@ public partial class AuthController : Controller
         }
     }
 
-    private IUserEmailStore<IdentityUser> GetEmailStore()
+    private IUserEmailStore<RockFsUser> GetEmailStore()
     {
         if (!_userManager.SupportsUserEmail)
         {
             throw new NotSupportedException("The default UI requires a user store with email support.");
         }
-        return (IUserEmailStore<IdentityUser>)_userStore;
+        return (IUserEmailStore<RockFsUser>)_userStore;
     }
 }

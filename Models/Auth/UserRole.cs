@@ -2,8 +2,8 @@
 
 public enum UserRole
 {
-    Guest,
-    Member,
-    Administrator,
-    SystemAdministrator
+    Guest = 0,
+    Member = 1,
+    Administrator = 2,
+    SystemAdministrator = 3
 }
