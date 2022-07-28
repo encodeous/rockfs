@@ -88,6 +88,10 @@
     <ItemGroup>
       <Content Remove="wwwroot\css\Tailwind.scss" />
     </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="sdfasdfja%3bsldkfja%3bsldkfja%3bsldkfja%3blsdkfj%3blskdjflaksjdf.txt" />
+    </ItemGroup>
     
     <Target Name="Rollup" BeforeTargets="Build">
         <Exec Command="npm run build" />

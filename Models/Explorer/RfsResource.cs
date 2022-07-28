@@ -16,4 +16,26 @@ public class RfsResource
     [JsonIgnore]
     public string? AbsolutePath { get; init; }
     public string? Name { get; init; }
+
+    public RfsResourceInfo? Info
+    {
+        get
+        {
+            if (!CanRead) return null;
+            long size = 0;
+            string extension = "";
+            if (!IsDirectory)
+            {
+                var fi = new FileInfo(AbsolutePath);
+                size = fi.Length;
+                extension = fi.Extension.TrimStart('.');
+            }
+            return new RfsResourceInfo()
+            {
+                LastUpdate = File.GetLastWriteTimeUtc(AbsolutePath),
+                Size = size,
+                Extension = extension
+            };
+        }
+    }
 }

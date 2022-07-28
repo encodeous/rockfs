@@ -41,7 +41,7 @@ public partial class DashController : Controller
     [Route("dash/explore/{mountId:guid}/{*path}")]
     public async Task<IActionResult> Explore(Guid mountId, string? path)
     {
-        if (path == null) path = "";
+        if (path == null || path == "/") path = "";
         var user = await _userManager.GetUserAsync(User);
         var grant = await _rfs.GetGrant(mountId, new Guid(user.Id));
         string name = "Unauthorized Mount";

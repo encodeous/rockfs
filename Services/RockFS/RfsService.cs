@@ -222,7 +222,7 @@ public class RfsService
 
     public async Task<RfsResource> GetResource(RfsGrant grant, string path)
     {
-        if (path == "") path = "/";
+        if (path == "") path = Path.DirectorySeparatorChar + "";
         if (grant.MountId == Guid.Empty)
         {
             return RfsResource.NoAccess;

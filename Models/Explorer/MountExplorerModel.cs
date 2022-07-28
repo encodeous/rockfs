@@ -16,5 +16,6 @@ public class MountExplorerModel
     public string Folder { get; set;}
     public string MountName { get;  set; }
     public string BasePath { get;  set; }
+    public string CurPath { get;  set; }
     public RfsResource[] Resources { get;  set; }
 }

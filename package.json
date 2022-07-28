@@ -9,5 +9,8 @@
     "rollup": "^2.39.0",
     "rollup-plugin-svelte": "^7.1.0",
     "svelte": "^3.32.3"
+  },
+  "dependencies": {
+    "svelte-tag": "^1.0.1"
   }
 }

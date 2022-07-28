@@ -3,6 +3,11 @@
 @using JsonSerializer = System.Text.Json.JsonSerializer
 @model RockFS.Views.Explorer.MountExplorerModel
 
+@{
+    Model.BasePath = Urls.ExplorerUrl + "/" + Model.Grant.MountId;
+    Model.CurPath = Model.BasePath + "/" + Model.Folder;
+}
+
 @if (Model.Grant.MountId == Guid.Empty)
 {
     <div>
@@ -11,57 +16,45 @@
     return;
 }
 
-<div class="rfs-explorer">
+<div class="rfs-explorer bg-dark ">
     <div class="rfs-explorer-title d-flex">
         <div class="flex-grow-1">
-            <strong>@Model.MountName</strong>
-            /
-            @Model.Folder
+            <a href="@Model.BasePath">@Model.MountName</a>
+            @{
+                var paths = Model.Folder.Split("/");
+                if (paths.Any())
+                {
+                    var curPath = Model.BasePath + "/";
+                    foreach (var path in paths)
+                    {
+                        curPath += path + "/";
+                        <span>
+                            /
+                            <a href="@curPath">@path</a>
+                        </span>
+                    }
+                }
+            }
         </div>
         <a class="rfs-button" title="Mount Settings" href="@Urls.MountSettingsUrl/@Model.Grant.MountId">
             <i class="fa-solid fa-gear"></i>
         </a>
     </div>
     @* File Manager *@
-    <div id="file-explorer" class="bg-dark files">
-        <table class="table table-dark table-hover">
-          <thead class="table-light">
-          <tr>
-              <th scope="col"></th>
-              <th scope="col">Name</th>
-              <th scope="col">Size</th>
-              <th scope="col">Last Updated</th>
-          </tr>
-          </thead>
-          <tbody>
-          @for (int i = 0; i < 50; i++)
-          {
-              <tr key="@i">
-                  <td style="width: 20px">
-                      <span class="fiv-viv fiv-icon-txt"></span>
-                  </td>
-                  <td>
-                      file@(i).txt
-                  </td>
-                  <td>
-                      @i kb
-                  </td>
-                  <td>
-                      @DateTime.UtcNow.Subtract(TimeSpan.FromSeconds(i)).Humanize()
-                  </td>
-              </tr>
-          }
-          </tbody>
-        </table>
+    <div>
+        <rfs-explorer/>
     </div>
-    <div class="bg-dark p-2">
+    <div class="p-3">
         @* Inspector *@
-        <h5>File Info</h5>
         <rfs-inspector/>
     </div>
 </div>
 
 <style>
+    a{
+        color: #86b7fe;
+        text-decoration: none;
+    }
     .fiv-viv{
         width: 20px;
     }
@@ -71,15 +64,8 @@
         flex-wrap: wrap;
         overflow: auto;
         overflow-x: hidden;
-        height: 80vh;
+        max-height: 80vh;
         justify-content: space-between;
-    }
-    .file{
-        padding: 5px;
-        height: 150px;
-        width: 150px;
-        margin: 5px;
-        background-color: #2c3034;
     }
     .rfs-explorer{
         display: grid;
@@ -122,10 +108,4 @@ const nav = document.getElementsByClassName("navbar")[0];
     // setup
     window.requestAnimationFrame(run);
     window.explorerData = @Html.Raw(JsonSerializer.Serialize(Model))
-    document.getElementById("file-explorer").addEventListener("mousedown", mouseDown);
-    let pos1;
-    function mouseDown(event){
-        console.log(event);
-        pos1 = [event.x, event.y]
-    }
 </script>
